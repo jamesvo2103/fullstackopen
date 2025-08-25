@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "fullstackopen",
+			"path": ".."
+		},
+		{
+			"name": "node",
+			"path": "../../node"
+		}
+	],
+	"settings": {}
+}
