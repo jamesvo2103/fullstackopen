@@ -32,16 +32,10 @@ app.get('/api/notes', (request, response) => {
 })
 
 // GET a single note by ID from the database
-app.get('/api/notes/:id', (request, response, next) => {
-  Note.findById(request.params.id)
-    .then(note => {
-      if (note) {
-        response.json(note)
-      } else {
-        response.status(404).end()
-      }
-    })
-    .catch(error => next(error)) // Pass errors to the error handler
+app.get('/api/notes/:id', (request, response) => {
+  Note.findById(request.params.id).then(note => {
+    response.json(note)
+  })
 })
 
 // DELETE a note by ID from the database
@@ -54,10 +48,10 @@ app.delete('/api/notes/:id', (request, response, next) => {
 })
 
 // CREATE a new note and save it to the database
-app.post('/api/notes', (request, response, next) => {
+app.post('/api/notes', (request, response) => {
   const body = request.body
 
-  if (body.content === undefined) {
+  if (!body.content) {
     return response.status(400).json({ error: 'content missing' })
   }
 
@@ -66,11 +60,9 @@ app.post('/api/notes', (request, response, next) => {
     important: body.important || false,
   })
 
-  note.save()
-    .then(savedNote => {
-      response.json(savedNote)
-    })
-    .catch(error => next(error))
+  note.save().then(savedNote => {
+    response.json(savedNote)
+  })
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
