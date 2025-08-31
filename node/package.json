@@ -6,13 +6,17 @@
     "test": "echo \\\"Error: no test specified\\\" && exit 1",
     "dev": "node --watch index.js",
     "start": "node index.js",
-    "build": "rm -rf dist && cd ../notes && npm install && npm run build && cp -r dist ../node/"
+    "build:ui": "rm -rf dist && cd ../notes && npm run build && cp -r dist ../node",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "author": "Matti Luukkainen",
   "license": "MIT",
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.18.0"
   }
 }
