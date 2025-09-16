@@ -1,0 +1,25 @@
+{
+  "name": "fullstackopen",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesvo2103/fullstackopen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamesvo2103/fullstackopen/issues"
+  },
+  "homepage": "https://github.com/jamesvo2103/fullstackopen#readme",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.5.0"
+  }
+}

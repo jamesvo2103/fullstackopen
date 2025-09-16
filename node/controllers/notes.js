@@ -60,7 +60,7 @@ notesRouter.delete('/:id', async (request, response, next) => {
   }
 })
 
-otesRouter.put('/:id', async (request, response, next) => {
+notesRouter.put('/:id', async (request, response, next) => {
   const { content, important } = request.body
 
   try {
