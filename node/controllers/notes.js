@@ -20,60 +20,59 @@ notesRouter.get('/', async (request, response) => {
 })
 
 notesRouter.get('/:id', async (request, response) => {
-  const note = await Note.findById(request.params.id)
+  try{const note = await Note.findById(request.params.id)
   if (note) {
     response.json(note)
   } else {
     response.status(404).end()
   }
+ } catch (error) { next(error) }
 })
 
-notesRouter.post('/', async (request, response) => {
+notesRouter.post('/', async (request, response, next) => {
   const body = request.body
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
+  try {
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+    const user = await User.findById(decodedToken.id)
+    const note = new Note({
+      content: body.content,
+      important: body.important || false,
+      user: user._id
+    })
+    const savedNote = await note.save()
+    user.notes = user.notes.concat(savedNote._id)
+    await user.save()
+    response.status(201).json(savedNote)
+  } catch (error) {
+    next(error) 
   }
-  const user = await User.findById(decodedToken.id)
-
-  if (!user) {
-    return response.status(400).json({ error: 'userID missing or not valid' })
-  }
-  const note = new Note({
-    content: body.content,
-    important: body.important || false,
-    user: user._id
-  })
-
-
-  const savedNote = await note.save()
-  user.notes = user.notes.concat(savedNote._id)
-  await user.save()
-  response.status(201).json(savedNote)
 })
 
-notesRouter.delete('/:id', async (request, response) => {
-  await Note.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+notesRouter.delete('/:id', async (request, response, next) => {
+  try {
+    await Note.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
 })
 
-notesRouter.put('/:id', (request, response, next) => {
+otesRouter.put('/:id', async (request, response, next) => {
   const { content, important } = request.body
 
-  Note.findById(request.params.id)
-    .then(note => {
-      if (!note) {
-        return response.status(404).end()
-      }
-
-      note.content = content
-      note.important = important
-
-      return note.save().then((updatedNote) => {
-        response.json(updatedNote)
-      })
-    })
-    .catch(error => next(error))
+  try {
+    const updatedNote = await Note.findByIdAndUpdate(
+      request.params.id,
+      { content, important },
+      { new: true, runValidators: true, context: 'query' }
+    )
+    response.json(updatedNote)
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = notesRouter
