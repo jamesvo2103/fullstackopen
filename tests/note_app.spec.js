@@ -1,5 +1,5 @@
 const { test, describe, expect, beforeEach } = require('@playwright/test')
-const {loginWith, createNote} = require('./helper')
+const { loginWith, createNote } = require('./helper')
 
 describe('Note app', () => {
   beforeEach(async ({ page, request }) => {
@@ -34,13 +34,13 @@ describe('Note app', () => {
     await expect(page.getByText('Note app, Department of Computer Science, University of Helsinki 2025')).toBeVisible()
   })
 
-   test('user can log in', async ({ page }) => {
-    await loginWith(page, 'mluukkai', 'wrong') 
-  
+  test('user can log in', async ({ page }) => {
+    await loginWith(page, 'mluukkai', 'wrong')
+
     await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
   })
 
-   describe('when logged in', () => {
+  describe('when logged in', () => {
     beforeEach(async ({ page }) => {
       await loginWith(page, 'mluukkai', 'salainen')
     })
@@ -53,11 +53,26 @@ describe('Note app', () => {
       beforeEach(async ({ page }) => {
         await createNote(page, 'another note by playwright')
       })
-  
+
       test('importance can be changed', async ({ page }) => {
         await page.getByRole('button', { name: 'make not important' }).click()
         await expect(page.getByText('make important')).toBeVisible()
       })
     })
-  })  
+    describe('and several notes exists', () => {
+      beforeEach(async ({ page }) => {
+        await createNote(page, 'first note')
+        await createNote(page, 'second note')
+      })
+
+      test('one of those can be made nonimportant', async ({ page }) => {
+        await page.pause()
+        const otherNoteText = page.getByText('first note')
+        const otherNoteElement = otherNoteText.locator('..')
+
+        await otherNoteElement.getByRole('button', { name: 'make not important' }).click()
+        await expect(otherNoteElement.getByText('make important')).toBeVisible()
+      })
+    })
+  })
 })
