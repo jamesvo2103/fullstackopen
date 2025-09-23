@@ -8,12 +8,12 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server -p 3001 db.json",
+    "server": "json-server -p3001 --watch db.json",
     "test": "jest"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0"

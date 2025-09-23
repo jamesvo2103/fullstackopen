@@ -1,24 +1,14 @@
 {
   "notes": [
     {
-      "id": "1",
-      "content": "HTML is easy",
-      "important": true
+      "content": "the app state is in redux store",
+      "important": true,
+      "id": 1
     },
     {
-      "id": "2",
-      "content": "Browser can execute only JavaScript",
-      "important": false
-    },
-    {
-      "id": "3",
-      "content": "GET and POST are the most important methods of HTTP protocol",
-      "important": true
-    },
-    {
-      "id": "4",
-      "content": "a new note...",
-      "important": false
+      "content": "state changes are made with actions",
+      "important": false,
+      "id": 2
     }
   ]
 }
