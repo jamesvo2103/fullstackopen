@@ -1,53 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-
 import { createStore } from 'redux'
 
-const counterReducer = (state = 0, action) => {
-  switch (action.type) {
-    case 'INCREMENT':
-      return state + 1
-    case 'DECREMENT':
-      return state - 1
-    case 'ZERO':
-      return 0
-    default:
-      return state
-  }
-}
+import { Provider } from 'react-redux'
 
-const store = createStore(counterReducer)
+import App from './App'
+import noteReducer from './reducers/noteReducer'
 
-const App = () => {
-  return (
-    <div>
-      <div>
-        {store.getState()}
-      </div>
-      <button 
-        onClick={e => store.dispatch({ type: 'INCREMENT' })}
-      >
-        plus
-      </button>
-      <button
-        onClick={e => store.dispatch({ type: 'DECREMENT' })}
-      >
-        minus
-      </button>
-      <button 
-        onClick={e => store.dispatch({ type: 'ZERO' })}
-      >
-        zero
-      </button>
-    </div>
-  )
-}
+const store = createStore(noteReducer)
 
-const root = ReactDOM.createRoot(document.getElementById('root'))
+ReactDOM.createRoot(document.getElementById('root')).render(
 
-const renderApp = () => {
-  root.render(<App />)
-}
+  <Provider store={store}>
+    <App />
 
-renderApp()
-store.subscribe(renderApp)
+  </Provider>
+)
