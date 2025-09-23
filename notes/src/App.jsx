@@ -1,25 +1,57 @@
-import { useEffect } from 'react'
-import NewNote from './components/NewNote'
-import Notes from './components/Notes'
-import VisibilityFilter from './components/VisibilityFilter'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import {getNotes, createNote, updateNote} from './requests'
 
-import noteService from './services/notes'
-import { initializeNotes } from './reducers/noteReducer'
-import { useDispatch } from 'react-redux'
-import { init } from '../../node/app'
 
 const App = () => {
+  const queryClient = useQueryClient()
 
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(initializeNotes())
-  }, [])
+  const newNoteMutation = useMutation({
+    mutationFn: createNote, 
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] })
+    },
+  })
 
-  return (
+  const addNote = async (event) => {
+    event.preventDefault()
+    const content = event.target.note.value
+    event.target.note.value = ''
+    newNoteMutation.mutate({ content, important: true })
+  }
+
+  const updateNoteMutation = useMutation({
+    mutationFn: updateNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] })
+    },
+  })
+  const toggleImportance = (note) => {
+    updateNoteMutation.mutate({...note, important: !note.important })
+  }
+
+  const result = useQuery({
+    queryKey: ['notes'],
+    queryFn: getNotes})
+
+  if ( result.isLoading ) {
+    return <div>loading data...</div>
+  }
+
+  const notes = result.data
+
+  return(
     <div>
-      <NewNote />
-      <VisibilityFilter />
-      <Notes />
+      <h2>Notes app</h2>
+      <form onSubmit={addNote}>
+        <input name="note" />
+        <button type="submit">add</button>
+      </form>
+      {notes.map(note =>
+        <li key={note.id} onClick={() => toggleImportance(note)}>
+          {note.content} 
+          <strong> {note.important ? 'important' : ''}</strong>
+        </li>
+      )}
     </div>
   )
 }
