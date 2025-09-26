@@ -1,5 +1,4 @@
 import { createSlice, current } from '@reduxjs/toolkit'
-import { set } from '../../../node/app'
 import noteService from '../services/notes'
 const initialState = [
   {
